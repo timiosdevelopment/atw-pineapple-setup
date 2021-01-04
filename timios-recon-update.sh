@@ -22,3 +22,5 @@ download_file() {
 
 download_file "recon.py"
 download_file "timios-recon"
+
+chmod +x ./timios-recon
