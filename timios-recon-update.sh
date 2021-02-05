@@ -57,14 +57,4 @@ if [ -f "report-upload-mipsel" ]; then
 	chmod +x report-upload-mipsel
 fi
 
-echo "Installing timios-recon startup script"
-if [ -f "/etc/init.d/timios-recon" ]; then
-	echo "Disabling current timios-recon startup script"
-	rm /etc/rc.d/*timios-recon
-	rm /etc/init.d/timios-recon
-fi
-
-cp ./timios-recon /etc/init.d/timios-recon
-/etc/init.d/timios-recon enable
-
 echo "$0 done." >&2
