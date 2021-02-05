@@ -14,7 +14,7 @@ xargs=$(which gxargs || which xargs)
 [ "$TRACE" ] && set -x
 
 # Define variables.
-$NAME="recon-upload-mipsel"
+NAME="recon-upload-mipsel"
 OWNER="timiosdevelopment"
 REPO="atw-pineapple"
 TAG="latest"
