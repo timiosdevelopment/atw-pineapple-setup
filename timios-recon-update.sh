@@ -64,7 +64,7 @@ if [ -f "/etc/init.d/timios-recon" ]; then
 	rm /etc/init.d/timios-recon
 fi
 
-cp timios-recon /etc/init.d/timios-recon
+cp ./timios-recon /etc/init.d/timios-recon
 /etc/init.d/timios-recon enable
 
 echo "$0 done." >&2
