@@ -1,14 +1,41 @@
+#!/usr/bin/env bash
+# Script to download asset file from tag release using GitHub API v3.
+# See: http://stackoverflow.com/a/35688093/55075    
+CWD="$(cd -P -- "$(dirname -- "$0")" && pwd -P)"
 
-if [ -z "$1" ]; then
-  echo "Github access token needed"
-  exit 1
-fi
+# Check dependencies.
+set -e
+type curl grep sed tr >&2
+xargs=$(which gxargs || which xargs)
 
-TOKEN=$1;
-OWNER="timiosdevelopment";
-REPO="atw-pineapple";
+# Validate settings.
+[ -f ~/.secrets ] && source ~/.secrets
+[ "$GITHUB_API_TOKEN" ] || { echo "Error: Please define GITHUB_API_TOKEN variable." >&2; exit 1; }
+[ "$TRACE" ] && set -x
 
-auth_header="-d --header='Authorization: token $TOKEN'";
-accept_header="--header='Accept:application/octet-stream'";
-ASSET_ID=$(wget "$auth_header" -O - https://api.github.com/repos/$OWNER/$REPO/releases/tags/latest | python3 -c 'import sys, json; print json.load(sys.stdin)["assets"][0]["id"]') && \
-  wget "$auth_header" "$accept_header" -O timios-recon.tar.gz https://api.github.com/repos/$OWNER/$REPO/releases/assets/$ASSET_ID;
+# Define variables.
+$NAME="recon-upload-mipsel"
+OWNER="timiosdevelopment"
+REPO="atw-pineapple"
+GH_API="https://api.github.com"
+GH_REPO="$GH_API/repos/$OWNER/$REPO"
+GH_TAGS="$GH_REPO/releases/tags/$tag"
+AUTH="Authorization: token $GITHUB_API_TOKEN"
+WGET_ARGS="--content-disposition --auth-no-challenge --no-cookie"
+CURL_ARGS="-LJO#"
+
+# Validate token.
+curl -o /dev/null -sH "$AUTH" $GH_REPO || { echo "Error: Invalid repo, token or network issue!";  exit 1; }
+
+# Read asset tags.
+response=$(curl -sH "$AUTH" $GH_TAGS)
+# Get ID of the asset based on given name.
+eval $(echo "$response" | grep -C3 "name.:.\+$name" | grep -w id | tr : = | tr -cd '[[:alnum:]]=')
+#id=$(echo "$response" | jq --arg name "$name" '.assets[] | select(.name == $name).id') # If jq is installed, this can be used instead. 
+[ "$id" ] || { echo "Error: Failed to get asset id, response: $response" | awk 'length($0)<100' >&2; exit 1; }
+GH_ASSET="$GH_REPO/releases/assets/$id"
+
+# Download asset file.
+echo "Downloading asset..." >&2
+curl $CURL_ARGS -H "Authorization: token $GITHUB_API_TOKEN" -H 'Accept: application/octet-stream' "$GH_ASSET"
+echo "$0 done." >&2
