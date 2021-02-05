@@ -28,5 +28,5 @@ curl -o /dev/null -sH "$AUTH" $GH_REPO || { echo "Error: Invalid repo, token or 
 
 # Download asset file.
 echo "Downloading asset..." >&2
-curl $CURL_ARGS -H "$AUTH" -H 'Accept: application/octet-stream' "$GH_TARBALL"
+curl -H "$AUTH" -O atw-pineapple.tar.gz "$GH_TARBALL"
 echo "$0 done." >&2
