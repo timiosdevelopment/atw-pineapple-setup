@@ -16,26 +16,7 @@ xargs=$(which gxargs || which xargs)
 # Define variables.
 OWNER="timiosdevelopment"
 REPO="atw-pineapple"
-GH_API="https://api.github.com"
-GH_REPO="$GH_API/repos/$OWNER/$REPO"
-GH_TARBALL="$GH_REPO/tarball/1.0.0"
-AUTH="Authorization: token $GITHUB_API_TOKEN"
 
-# Validate token.
-curl -o /dev/null -sH "$AUTH" $GH_REPO || { echo "Error: Invalid repo, token or network issue!";  exit 1; }
-
-# Download asset file.
-echo "Downloading asset..." >&2
-curl -LJO -H "$AUTH" "$GH_TARBALL"
-echo "$0 done." >&2
-
-TARFILE=$(ls | grep timiosdevelopment-atw-pineapple*.tar.gz -C 1)
-NAME=$(basename "$TARFILE" .tar.gz)
-
-echo "Unpacking release to /tmp/..." >&2
-tar -xvf timiosdevelopment-atw-pineapple*.tar.gz -C /tmp/
-echo "$0 done." >&2
-
-echo "Copying over extracted files to /root/timios-recon/..."
-cp -r /tmp/timiosdevelopment-atw-pineapple*/ /root/timios-recon/
-echo "$0 done." >&2
+CURL="curl -H 'Authorization: token $GITHUB_API_TOKEN' https://api.github.com/repos/$OWNER/$REPO/releases"
+ASSET_ID=$(eval "$CURL/tag/latest" | jq .assets[0].id)
+eval "$CURL/assets/$ASSET_ID -LJOH 'Accept: application/octet-stream'"
