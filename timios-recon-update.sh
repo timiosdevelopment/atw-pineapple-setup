@@ -10,5 +10,5 @@ REPO="atw-pineapple";
 
 auth_header="-d --header='Authorization: token $TOKEN'";
 accept_header="--header='Accept:application/octet-stream'";
-ASSET_ID=$(wget -d "$auth_header" -O - https://api.github.com/repos/$OWNER/$REPO/releases/tags/latest | python3 -c 'import sys, json; print json.load(sys.stdin)["assets"][0]["id"]') && \
+ASSET_ID=$(wget "$auth_header" -O - https://api.github.com/repos/$OWNER/$REPO/releases/tags/latest | python3 -c 'import sys, json; print json.load(sys.stdin)["assets"][0]["id"]') && \
   wget "$auth_header" "$accept_header" -O timios-recon.tar.gz https://api.github.com/repos/$OWNER/$REPO/releases/assets/$ASSET_ID;
