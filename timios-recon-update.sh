@@ -5,7 +5,7 @@ CWD="$(cd -P -- "$(dirname -- "$0")" && pwd -P)"
 
 # Check dependencies.
 set -e
-type curl grep sed tr jq >&2
+type curl jq >&2
 xargs=$(which gxargs || which xargs)
 
 # Validate settings.
