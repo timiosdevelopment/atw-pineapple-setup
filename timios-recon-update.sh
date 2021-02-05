@@ -32,5 +32,10 @@ echo "$0 done." >&2
 TARFILE=$(ls | grep timiosdevelopment-atw-pineapple*.tar.gz -C 1)
 NAME=$(basename "$TARFILE" .tar.gz)
 
-echo "Unpacking release to /root/timios-recon/..." >&2
-tar -xvf timiosdevelopment-atw-pineapple*.tar.gz "$NAME/" -C /root/timios-recon/
+echo "Unpacking release to /tmp/..." >&2
+tar -xvf timiosdevelopment-atw-pineapple*.tar.gz -C /tmp/
+echo "$0 done." >&2
+
+echo "Copying over extracted files to /root/timios-recon/..."
+cp -r /tmp/timiosdevelopment-atw-pineapple*/ /root/timios-recon/
+echo "$0 done." >&2
