@@ -60,7 +60,8 @@ fi
 echo "Installing timios-recon startup script"
 if [ -f "/etc/init.d/timios-recon" ]; then
 	echo "Disabling current timios-recon startup script"
-	/etc/init.d/timios-recon disable
+	rm /etc/rc.d/*timios-recon
+	rm /etc/init.d/timios-recon
 fi
 
 cp timios-recon /etc/init.d/timios-recon
