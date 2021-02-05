@@ -33,4 +33,4 @@ TARFILE=$(ls | grep timiosdevelopment-atw-pineapple*.tar.gz -C 1)
 NAME=$(basename "$TARFILE" .tar.gz)
 
 echo "Unpacking release to /root/timios-recon/..." >&2
-tar -xvf timiosdevelopment-atw-pineapple*.tar.gz "$NAME" -C /root/timios-recon/
+tar -xvf timiosdevelopment-atw-pineapple*.tar.gz "$NAME/" -C /root/timios-recon/
