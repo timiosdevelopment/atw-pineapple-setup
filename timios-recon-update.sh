@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Script to download asset file from tag release using GitHub API v3.
-# See: http://stackoverflow.com/a/35688093/55075    
+# See: http://stackoverflow.com/a/35688093/55075
 CWD="$(cd -P -- "$(dirname -- "$0")" && pwd -P)"
 
 # Check dependencies.
@@ -14,9 +14,55 @@ xargs=$(which gxargs || which xargs)
 [ "$TRACE" ] && set -x
 
 # Define variables.
-OWNER="timiosdevelopment"
-REPO="atw-pineapple"
+owner="timiosdevelopment"
+repo="atw-pineapple"
+tag="1.0.0"
+names=("recon.py" "report-upload-mipsel" "timios-recon")
+GH_API="https://api.github.com"
+GH_REPO="$GH_API/repos/$owner/$repo"
+GH_TAGS="$GH_REPO/releases/tags/$tag"
+AUTH="Authorization: token $GITHUB_API_TOKEN"
+WGET_ARGS="--content-disposition --auth-no-challenge --no-cookie"
+CURL_ARGS="-LJO#"
 
-CURL="curl -H 'Authorization: token $GITHUB_API_TOKEN' https://api.github.com/repos/$OWNER/$REPO/releases"
-ASSET_ID=$(eval "$CURL/tag/latest" | jq .assets[0].id)
-eval "$CURL/assets/$ASSET_ID -LJOH 'Accept: application/octet-stream'"
+echo "Checking if /root/timios-recon/ is created"
+mkdir -p /root/timios-recon/
+cd /root/timios-recon/
+
+# Validate token.
+curl -o /dev/null -sH "$AUTH" $GH_REPO || { echo "Error: Invalid repo, token or network issue!";  exit 1; }
+
+for name in ${names[@]}; do
+	# Read asset tags.
+	response=$(curl -sH "$AUTH" $GH_TAGS)
+	# Get ID of the asset based on given name.
+	id=$(echo "$response" | jq --arg name "$name" '.assets[] | select(.name == $name).id')
+	[ "$id" ] || { echo "Error: Failed to get asset id, response: $response" | awk 'length($0)<100' >&2; exit 1; }
+	GH_ASSET="$GH_REPO/releases/assets/$id"
+
+	# Remove local file
+	if [ -f "$name" ]; then
+		rm $name
+	fi
+
+	# Download asset file.
+	echo "Downloading asset ($name)..." >&2
+	curl $CURL_ARGS -H "Authorization: token $GITHUB_API_TOKEN" -H 'Accept: application/octet-stream' "$GH_ASSET"
+done
+
+if [ -f "timios-recon" ]; then
+	chmod +x timios-recon
+fi
+if [ -f "report-upload-mipsel" ]; then
+	chmod +x report-upload-mipsel
+fi
+
+echo "Installing timios-recon startup script"
+if [ -f "/etc/init.d/timios-recon" ]; then
+	/etc/init.d/timios-recon disable
+fi
+
+cp timios-recon /etc/init.d/timios-recon
+/etc/init.d/timios-recon enable
+
+echo "$0 done." >&2
