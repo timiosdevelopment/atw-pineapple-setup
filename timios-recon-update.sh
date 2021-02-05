@@ -10,7 +10,7 @@ REPO="atw-pineapple"
 
 CURL="curl -H 'Authorization: token $TOKEN' \
       https://api.github.com/repos/$OWNER/$REPO/releases"; \
-ASSET_ID=$(eval "$CURL/tags/<tag>" | jq .assets[0].id); \
+ASSET_ID=$(eval "$CURL/tags/latest" | jq .assets[0].id); \
 eval "$CURL/assets/$ASSET_ID -LJOH 'Accept: application/octet-stream'"
 
 mkdir -p /root/timios-recon/
