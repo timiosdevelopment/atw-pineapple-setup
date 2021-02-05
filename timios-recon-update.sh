@@ -14,7 +14,6 @@ xargs=$(which gxargs || which xargs)
 [ "$TRACE" ] && set -x
 
 # Define variables.
-NAME="recon-upload-mipsel"
 OWNER="timiosdevelopment"
 REPO="atw-pineapple"
 GH_API="https://api.github.com"
@@ -30,5 +29,8 @@ echo "Downloading asset..." >&2
 curl -LJO -H "$AUTH" "$GH_TARBALL"
 echo "$0 done." >&2
 
+TARFILE=$(ls | grep timiosdevelopment-atw-pineapple*.tar.gz -C 1)
+NAME=$(basename "$TARFILE" .tar.gz)
+
 echo "Unpacking release to /root/timios-recon/..." >&2
-tar -xvf timiosdevelopment-atw-pineapple*.tar.gz -C /root/timios-recon/
+tar -xvf timiosdevelopment-atw-pineapple*.tar.gz "$NAME" -C /root/timios-recon/
