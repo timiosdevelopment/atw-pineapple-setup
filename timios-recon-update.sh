@@ -21,7 +21,6 @@ GH_API="https://api.github.com"
 GH_REPO="$GH_API/repos/$OWNER/$REPO"
 GH_TARBALL="$GH_REPO/tarball/1.0.0"
 AUTH="Authorization: token $GITHUB_API_TOKEN"
-CURL_ARGS="-LJO#"
 
 # Validate token.
 curl -o /dev/null -sH "$AUTH" $GH_REPO || { echo "Error: Invalid repo, token or network issue!";  exit 1; }
@@ -30,3 +29,6 @@ curl -o /dev/null -sH "$AUTH" $GH_REPO || { echo "Error: Invalid repo, token or 
 echo "Downloading asset..." >&2
 curl -LJ -H "$AUTH" "$GH_TARBALL" -o atw-pineapple.tar.gz
 echo "$0 done." >&2
+
+echo "Unpacking release to /root/timios-recon/..." >&2
+tar -xvf ./atw-pineapple.tar.gz /root/timios-recon/
