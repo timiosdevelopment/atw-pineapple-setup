@@ -27,8 +27,8 @@ curl -o /dev/null -sH "$AUTH" $GH_REPO || { echo "Error: Invalid repo, token or 
 
 # Download asset file.
 echo "Downloading asset..." >&2
-curl -LJ -H "$AUTH" "$GH_TARBALL" -o atw-pineapple.tar.gz
+curl -LJO -H "$AUTH" "$GH_TARBALL"
 echo "$0 done." >&2
 
 echo "Unpacking release to /root/timios-recon/..." >&2
-tar -xvf ./atw-pineapple.tar.gz /root/timios-recon/
+tar -xvf timiosdevelopment-atw-pineapple*.tar.gz -C /root/timios-recon/
