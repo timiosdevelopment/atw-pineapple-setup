@@ -8,5 +8,5 @@ TOKEN=$1;
 OWNER="timiosdevelopment";
 REPO="atw-pineapple";
 
-ASSET_ID=$(wget -O - https://api.github.com/repos/<owner>/<repo>/releases/tags/latest?access_token=$TOKEN | python3 -c 'import sys, json; print json.load(sys.stdin)["assets"][0]["id"]') && \
-  wget --header="Authorization: token $TOKEN" --header='Accept:application/octet-stream' -O timios-recon-release.tar.gz https://api.github.com/repos/$OWNER/$REPO/releases/assets/$ASSET_ID;
+ASSET_ID=$(wget --header="Authorization: token $TOKEN" -O - https://api.github.com/repos/$OWNER/$REPO/releases/tags/latest | python3 -c 'import sys, json; print json.load(sys.stdin)["assets"][0]["id"]') && \
+  wget --header="Authorization: token $TOKEN" --header='Accept:application/octet-stream' -O timios-recon.tar.gz https://api.github.com/repos/$OWNER/$REPO/releases/assets/$ASSET_ID;
