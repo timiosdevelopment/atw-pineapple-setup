@@ -16,7 +16,7 @@ xargs=$(which gxargs || which xargs)
 # Define variables.
 owner="timiosdevelopment"
 repo="atw-pineapple"
-tag="1.0.0"
+tag="1.0.1"
 names=("recon.py" "report-upload-mipsel" "timios-recon")
 GH_API="https://api.github.com"
 GH_REPO="$GH_API/repos/$owner/$repo"
